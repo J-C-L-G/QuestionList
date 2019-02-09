@@ -1,13 +1,13 @@
-import AllView from './All/All'
-import HomeView from './Home/Home';
+import AskView from './Ask/Ask';
+import QuestionListView from './QuestionList/QuestionList'
 import QuestionView from './Question/Question';
 
-export const All = AllView;
-export const Home = HomeView;
+export const Ask = AskView;
+export const QuestionList = QuestionListView;
 export const Question = QuestionView;
 
 export default {
-    All,
-    Home,
+    Ask,
+    QuestionList,
     Question
 }
