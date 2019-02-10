@@ -2,20 +2,28 @@ import React, { Component } from 'react';
 import Routes from "../Routes/Routes";
 import Operations from '../../operations';
 
+const getEmptyQuestion = () => ({title: '', question: ''});
+
 class App extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
-            newQuestion: {
-                title: '',
-                question: ''
-            },
+            newQuestion: getEmptyQuestion(),
             questions: []
         };
-        this.updateNewQuestion = this.updateNewQuestion.bind(this);
+
+        this.questionOperations = {
+            updateNewQuestion: this.updateNewQuestion.bind(this),
+            createNewQuestion: this.createNewQuestion.bind(this)
+        };
     }
 
     componentDidMount(){
+        return this.updateQuestionList();
+    }
+
+    updateQuestionList(){
         return Operations.getQuestionList()
             .then(({data})=>{
                 this.setState({questions: data});
@@ -23,17 +31,29 @@ class App extends Component {
     }
 
     updateNewQuestion({target}){
-        console.log(target);
         const {id, value} = target;
         const data = { [id]: value};
         const newQuestion = Object.assign({}, this.state.newQuestion, data );
         this.setState( { newQuestion } );
     }
 
+    createNewQuestion(){
+        return Operations.createQuestion(this.state.newQuestion)
+            .then(({data})=>{
+                if(data.success){
+                    alert(`Question: "${this.state.newQuestion.question}" was created!`);
+                    this.setState({newQuestion: getEmptyQuestion()});
+                    this.updateQuestionList();
+                }else{
+                    alert(`Error creating Question: "${this.state.newQuestion.question}"`);
+                }
+            });
+    }
+
     render() {
     return (
         <div id="App">
-            <Routes {...this.state} updateNewQuestion={this.updateNewQuestion}/>
+            <Routes {...this.state} questionOperations={this.questionOperations} />
         </div>
     );
   }
